@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Custom animations (tailwindcss-animate is not compatible with Tailwind v4) */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
