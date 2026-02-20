@@ -1,5 +1,6 @@
 package com.miniprojects.learnandassessportal.service;
 
+import com.miniprojects.learnandassessportal.dto.AuthResponse;
 import com.miniprojects.learnandassessportal.dto.LoginRequest;
 import com.miniprojects.learnandassessportal.dto.RegisterRequest;
 import com.miniprojects.learnandassessportal.dto.GoogleLoginRequest;
@@ -8,8 +9,10 @@ import com.miniprojects.learnandassessportal.repository.UserRepository;
 
 import com.miniprojects.learnandassessportal.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -34,32 +37,42 @@ public class AuthService {
     // REPLACE WITH YOUR CLIENT ID
     private static final String GOOGLE_CLIENT_ID = "179579451755-pi8s5oc9057drsoophil46p5vdpp22cc.apps.googleusercontent.com";
 
-    public void register(RegisterRequest request) {
+    public User register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
         }
 
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setRole(User.Role.STUDENT); // Default role
+        user.setRole(determineRole(request.getEmail()));
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        User.Role expectedRole = determineRole(user.getEmail());
+        if (user.getRole() != expectedRole) {
+            user.setRole(expectedRole);
+            userRepository.save(user);
         }
 
         return user;
     }
 
-    public String googleLogin(GoogleLoginRequest request) {
+    public String generateTokenForUser(User user) {
+        return jwtUtils.generateToken(user);
+    }
+
+    public AuthResponse googleLogin(GoogleLoginRequest request) {
         try {
             GoogleIdTokenVerifier verifier =
                     new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
@@ -76,20 +89,26 @@ public class AuthService {
                 // Check if user exists
                 User user = userRepository.findByEmail(email).orElse(null);
 
+                User.Role determinedRole = determineRole(email);
+
                 if (user == null) {
                     // Register new user automatically
                     user = new User();
                     user.setEmail(email);
                     user.setFullName(name);
-                    user.setRole(User.Role.STUDENT); // Default role
+                    user.setRole(determinedRole);
                     user.setPasswordHash(
                             passwordEncoder.encode(UUID.randomUUID().toString())
                     );
                     userRepository.save(user);
+                } else if (user.getRole() != determinedRole) {
+                    user.setRole(determinedRole);
+                    userRepository.save(user);
                 }
 
                 // Generate JWT Token for your application
-                return jwtUtils.generateToken(user);
+                String token = jwtUtils.generateToken(user);
+                return new AuthResponse("Login Successful", user.getRole().name(), token);
 
             } else {
                 throw new RuntimeException("Invalid Google Token");
@@ -98,5 +117,23 @@ public class AuthService {
         } catch (Exception e) {
             throw new RuntimeException("Google Login Failed: " + e.getMessage());
         }
+    }
+
+    private User.Role determineRole(String email) {
+        if (email == null) {
+            return User.Role.STUDENT;
+        }
+
+        String normalized = email.trim().toLowerCase();
+
+        if ("instructor@example.com".equals(normalized)) {
+            return User.Role.INSTRUCTOR;
+        }
+
+        if (normalized.endsWith("@bitsathy.ac.in")) {
+            return User.Role.STUDENT;
+        }
+
+        return User.Role.STUDENT;
     }
 }

@@ -19,16 +19,36 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
+  const redirectByRole = (role) => {
+    if (role === 'INSTRUCTOR') {
+      navigate('/instructor/dashboard');
+    } else {
+      navigate('/student/dashboard');
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
-      await api.post('/auth/login', {
+      const response = await api.post('/auth/login', {
         email: data.email,
         password: data.password
       });
-      toast.success('Welcome back!');
-      navigate('/dashboard');
-    } catch {
-      toast.error('Invalid credentials');
+
+      const { role, message, token } = response.data || {};
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      if (role) {
+        localStorage.setItem('role', role);
+        toast.success(message || 'Welcome back!');
+        redirectByRole(role);
+      } else {
+        toast.success('Welcome back!');
+        navigate('/student/dashboard');
+      }
+    } catch (error) {
+      const apiMessage = error.response?.data?.message || 'Invalid credentials';
+      toast.error(apiMessage);
     }
   };
 
@@ -44,8 +64,13 @@ export default function LoginPage() {
 
       // Save YOUR app's token (not Google's)
       localStorage.setItem('token', res.data.token);
+      if (res.data.role) {
+        localStorage.setItem('role', res.data.role);
+        redirectByRole(res.data.role);
+      } else {
+        navigate('/student/dashboard');
+      }
       toast.success('Google Login Successful!');
-      navigate('/dashboard');
       
     } catch (error) {
       console.error("Login failed", error);

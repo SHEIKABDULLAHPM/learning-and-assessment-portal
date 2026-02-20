@@ -21,16 +21,17 @@ export default function RegisterPage() {
 const onSubmit = async (data) => {
   try {
     // Matches the DTO structure in Java
-    await api.post('/auth/register', {
+    const response = await api.post('/auth/register', {
       fullName: data.fullName,
       email: data.email,
       password: data.password
     });
     
-    toast.success('Account created! Please login.');
+    toast.success(response.data?.message || 'Account created! Please login.');
     navigate('/login'); // Redirect to login
   } catch (error) {
-    toast.error(error.response?.data || 'Registration failed');
+    const apiMessage = error.response?.data?.message || error.response?.data || 'Registration failed';
+    toast.error(apiMessage);
   }
 };
 

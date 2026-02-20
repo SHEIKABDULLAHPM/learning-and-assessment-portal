@@ -1,0 +1,19 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.maven.enabled": true,
+    "java.import.gradle.enabled": false,
+    "java.jdt.ls.vmargs": "-Xmx1G",
+    "java.server.launchMode": "Standard",
+    "java.import.exclusions": [
+        "**/node_modules/**",
+        "**/.metadata/**",
+        "**/archetype-resources/**",
+        "**/META-INF/maven/**"
+    ],
+    "java.project.resourceFilters": [
+        "node_modules",
+        "\\.git",
+        "frontend"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
+}
