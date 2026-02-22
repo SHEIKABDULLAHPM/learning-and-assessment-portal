@@ -1,0 +1,9 @@
+ModuleTitle,LessonTitle,LessonType,LessonContent
+Introduction to Java,What is Java?,VIDEO,https://www.youtube.com/watch?v=eIrMbAQSU34
+Introduction to Java,History of Java,TEXT,Java was developed by James Gosling at Sun Microsystems in 1995. It was originally called Oak.
+Introduction to Java,Java Installation Guide,PDF,https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing
+Data Types and Variables,Primitive Data Types,VIDEO,https://www.youtube.com/watch?v=Le25I331_yM
+Data Types and Variables,Type Casting in Java,TEXT,There are two types of casting - Widening (automatic) and Narrowing (manual). Widening happens when smaller type is converted to larger type.
+OOP Concepts,Classes and Objects,VIDEO,https://www.youtube.com/watch?v=IUqKuGNasdM
+OOP Concepts,Inheritance Explained,VIDEO,https://www.youtube.com/watch?v=Zs342ePFvRI
+OOP Concepts,OOP Summary Notes,TEXT,Object-Oriented Programming has 4 pillars: Encapsulation Inheritance Polymorphism and Abstraction.

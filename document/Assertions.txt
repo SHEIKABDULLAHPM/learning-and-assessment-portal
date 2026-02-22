@@ -1,0 +1,7 @@
+Assertions Part- 1||Introduction ||idenifier vs keywords
+
+Simpleassert || augmented assert
+
+various run time flags
+
+proper and improper use of assert

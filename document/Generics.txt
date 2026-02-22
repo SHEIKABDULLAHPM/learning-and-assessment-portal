@@ -1,0 +1,9 @@
+Generics Part-1 || Introduction
+
+time safety || type casting
+
+time safety || type casting Examples
+
+generics method ||generics wildcard characters(?)
+
+generics method

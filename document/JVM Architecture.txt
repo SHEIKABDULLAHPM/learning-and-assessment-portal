@@ -1,0 +1,19 @@
+JVM Architecture Part- 1||Introduction || class loading of system
+
+Linking ||verfi|| prepare||resolve
+
+how class loader works
+
+nead of customized classloader
+
+heap area || method area
+
+stack memory
+
+jvm execution engine
+
+complete jvm architecture
+
+
+
+

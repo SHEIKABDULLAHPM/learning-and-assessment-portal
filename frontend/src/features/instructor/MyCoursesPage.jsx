@@ -1,16 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { PlusCircle, BookOpen, Edit, Loader2, Trash2 } from 'lucide-react';
+import { PlusCircle, BookOpen, Edit, Loader2, Trash2, Settings, Image } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
+import Badge from '../../components/ui/Badge';
+import EmptyState from '../../components/ui/EmptyState';
 
 export default function MyCoursesPage() {
   const queryClient = useQueryClient();
 
   const { data: courses, isLoading, isError } = useQuery({
-    queryKey: ['courses'],
+    queryKey: ['instructor-courses'],
     queryFn: async () => {
-      const response = await api.get('/courses');
+      const response = await api.get('/courses/mine');
       return response.data;
     },
   });
@@ -21,15 +23,15 @@ export default function MyCoursesPage() {
     },
     onSuccess: () => {
       toast.success('Course deleted');
-      queryClient.invalidateQueries(['courses']);
+      queryClient.invalidateQueries({ queryKey: ['instructor-courses'] });
     },
     onError: (error) => {
       toast.error(error.response?.data || 'Failed to delete course');
-    }
+    },
   });
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure? This will delete all modules and lessons within this course.")) {
+    if (window.confirm('Are you sure? This will delete all modules and lessons within this course.')) {
       deleteMutation.mutate(id);
     }
   };
@@ -51,15 +53,16 @@ export default function MyCoursesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
-          <p className="text-gray-600">Manage your curriculum and content.</p>
+          <p className="text-gray-500 mt-1">Manage your curriculum and content.</p>
         </div>
         <Link
           to="/instructor/create-course"
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm shadow-sm"
         >
           <PlusCircle className="h-4 w-4 mr-2" />
           Create New Course
@@ -67,65 +70,82 @@ export default function MyCoursesPage() {
       </div>
 
       {courses?.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
-          <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No courses yet</h3>
-          <p className="mt-1 text-sm text-gray-500">Get started by creating your first course.</p>
-          <div className="mt-6">
+        <EmptyState
+          icon={BookOpen}
+          title="No courses yet"
+          description="Get started by creating your first course."
+          action={
             <Link
               to="/instructor/create-course"
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm"
             >
-              <PlusCircle className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+              <PlusCircle className="h-4 w-4 mr-2" />
               Create Course
             </Link>
-          </div>
-        </div>
+          }
+        />
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {courses?.map((course) => (
             <div
               key={course.courseId}
-              className="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+              className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-200"
             >
-              <div className="p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {course.category || 'General'}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {new Date(course.createdAt).toLocaleDateString()}
-                  </span>
+              {/* Thumbnail */}
+              <div className="relative h-44 bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+                {course.thumbnail ? (
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                    <Image className="h-10 w-10 mb-1" />
+                    <span className="text-xs">No thumbnail</span>
+                  </div>
+                )}
+                <div className="absolute top-3 left-3">
+                  <Badge variant="blue">{course.category || 'General'}</Badge>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 truncate">
-                  {course.title}
-                </h3>
-                <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                  {course.description}
-                </p>
               </div>
 
-              <div className="bg-gray-50 px-5 py-3 border-t border-gray-200 flex justify-between items-center">
+              {/* Body */}
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                  {course.title}
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 line-clamp-2 leading-relaxed">
+                  {course.description}
+                </p>
+                <div className="mt-3 text-xs text-gray-400">
+                  Created {new Date(course.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
                 <Link
                   to={`/instructor/courses/${course.courseId}`}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-900"
+                  className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
                 >
-                  Manage Content
+                  <Settings className="h-3.5 w-3.5 mr-1.5" />
+                  Manage
                 </Link>
 
-                <div className="flex space-x-3">
+                <div className="flex items-center gap-2">
                   <Link
                     to={`/instructor/edit-course/${course.courseId}`}
-                    className="text-gray-400 hover:text-indigo-600 transition-colors"
+                    className="p-2 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
                     title="Edit Settings"
                   >
                     <Edit className="h-4 w-4" />
                   </Link>
-
                   <button
                     onClick={() => handleDelete(course.courseId)}
-                    className="text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                     title="Delete Course"
+                    disabled={deleteMutation.isPending}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

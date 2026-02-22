@@ -25,7 +25,6 @@ public class ModuleService {
         // 2. Create the Module and Map it
         Module module = new Module();
         module.setTitle(request.getTitle());
-        module.setSubtitle(request.getSubtitle());
         module.setCourse(course);
 
         // Auto-generate order (put it at the end)
@@ -52,9 +51,6 @@ public class ModuleService {
         // Update fields
         if (request.getTitle() != null) {
             module.setTitle(request.getTitle());
-        }
-        if (request.getSubtitle() != null) {
-            module.setSubtitle(request.getSubtitle());
         }
         if (request.getModuleOrder() != null) {
             module.setModuleOrder(request.getModuleOrder());

@@ -1,0 +1,9 @@
+Garbage collection Part-1 || Introduction
+
+The ways to make object eligible for GC
+
+The methods for requesting jvm to run GC
+
+finalization-1
+
+finalization-2

@@ -1,0 +1,13 @@
+Serialization Part- 1 || Introduction
+
+Serialazation in the case of object graphs
+
+Customized serialization - 1
+
+Customized serialization - 2
+
+Inheritance serialization
+
+Externalization
+
+SerialVersion UID

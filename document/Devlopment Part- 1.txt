@@ -1,0 +1,5 @@
+Devlopment Part- 1||Introduction
+
+Jar Files || System Propertices
+
+Jar vs war vs var||JDK vs JRE VS JVM

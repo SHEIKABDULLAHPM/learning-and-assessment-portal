@@ -1,5 +1,6 @@
 package com.miniprojects.learnandassessportal.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -9,10 +10,10 @@ import java.util.UUID;
 @Service
 public class FileStorageService {
 
-    // Define where to store files (Change this path for your PC)
-    private final Path fileStorageLocation = Paths.get("uploads").toAbsolutePath().normalize();
+    private final Path fileStorageLocation;
 
-    public FileStorageService() {
+    public FileStorageService(@Value("${app.file.storage-dir:uploads}") String storageDir) {
+        this.fileStorageLocation = Paths.get(storageDir).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {

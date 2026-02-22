@@ -1,0 +1,35 @@
+Collections Part-1 || Introduction
+
+9key interfaces
+
+collection & collections|| list & set
+
+Array list
+
+Difference between Array list & linked list
+
+limitations of enumerations
+
+Setinterface||ShortedSet
+
+TreeSet
+
+comparator
+
+string object in Treeset Example
+
+Map || Hashmap || linked Hashmap
+
+linked Hashmap
+
+sortedmap
+
+hashtable
+
+queue
+
+Navigableset
+
+searching elements of list
+
+Arrays

@@ -1,6 +1,7 @@
 package com.miniprojects.learnandassessportal.controller;
 
 import com.miniprojects.learnandassessportal.model.Course;
+import com.miniprojects.learnandassessportal.service.BulkUploadService;
 import com.miniprojects.learnandassessportal.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -17,7 +19,16 @@ import java.util.List;
 public class CourseController {
 
     @Autowired private CourseService courseService;
+    @Autowired private BulkUploadService bulkUploadService;
 
+    @PostMapping("/{courseId}/bulk-upload")
+    public ResponseEntity<?> bulkUploadContent(
+            @PathVariable Integer courseId,
+            @RequestParam("file") MultipartFile file) {
+
+        bulkUploadService.processCsvBulkUpload(courseId, file);
+        return ResponseEntity.ok("Bulk upload successful");
+    }
     // 1. Create a New Course (Instructor Only)
     @PostMapping
     public ResponseEntity<Course> createCourse(@RequestBody Course course,

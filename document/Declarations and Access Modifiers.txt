@@ -1,0 +1,29 @@
+Java Source File Structure
+
+import and static import
+
+static import
+
+package statement
+
+Class Level Modifiers: final
+
+Class Level Modifiers: abstract
+
+MemberLevel Modifiers
+
+final variables
+
+static modifier
+
+native,static,transient
+
+interfaces-1
+
+interfaces-2
+
+interfaces-3
+
+interfaces-4
+
+

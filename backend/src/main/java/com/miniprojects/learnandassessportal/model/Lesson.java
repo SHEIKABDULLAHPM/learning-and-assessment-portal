@@ -18,11 +18,11 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private ContentType contentType; // VIDEO, PDF, TEXT
 
-    private String videoPath; // Stores file path (e.g., uploads/videos/abc.mp4)
-    private String pdfPath;
+    private String videoPath; // Will now store the YouTube URL
+    private String pdfPath;   // Will store the uploaded PDF file name
 
-    @Lob
-    private String textContent; // For text-based lessons
+    @Column(columnDefinition = "TEXT")
+    private String textContent;
 
     private Integer lessonOrder;
 

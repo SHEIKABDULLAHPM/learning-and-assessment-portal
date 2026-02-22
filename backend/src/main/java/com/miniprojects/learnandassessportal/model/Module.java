@@ -17,9 +17,6 @@ public class Module {
     @Column(nullable = false)
     private String title;
 
-    @Column(name = "sub_title")
-    private String subtitle;
-
     private Integer moduleOrder;
 
     @ManyToOne

@@ -1,0 +1,23 @@
+
+Exception Handling Part-1 || Introduction
+
+Default Exception Handling
+
+Checked vs Unchecked Exceptions
+
+Customized Exception Haning by try-catch
+
+finally block
+
+throw and throws
+
+throws keyword
+
+Customized Exceptions
+
+Top-10 Exceptions in java
+
+try with resources and multi-catch block
+
+Java Exception Handling For Certification & Interviews || Java Exception Handling
+

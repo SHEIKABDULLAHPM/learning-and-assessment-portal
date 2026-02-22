@@ -1,0 +1,18 @@
+Java Identifiers and Reserved Words
+Data Types part-1
+Data Types part-2
+Literals Part-1
+Literals part-2
+Arrays Part-1
+Arrays part-2
+Arrays Part-3
+Arrays Part-4
+Types of Variables : part-1
+Types of Variables :part-2
+var-arg methods
+main() method part-1
+main() method part-2
+Command Line Arguments
+Java Coding Standards
+
+

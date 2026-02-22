@@ -1,0 +1,5 @@
+ENUM Part- 1|| Introduction
+
+enum vs inheritance
+
+enum vs constructor
